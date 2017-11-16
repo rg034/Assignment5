@@ -11,7 +11,6 @@ Sept 22, 2017
 ******************************************************
 Oct  03, 2017 - Work on date format. Still getting an error
 Oct  05, 2017 - Removed date with permission from Dr. Woodcock
-Nov  13, 2017 - Add necessary Serialization code
 ****************************************************** 
 */
 
@@ -29,7 +28,7 @@ import java.io.Serializable;
  */
 
 //added the part where it implements Serializable
-public class StoreItem implements Serializable{
+public class StoreItem{
     static int itemCount;
     String title;
     String author;

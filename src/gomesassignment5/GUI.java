@@ -73,7 +73,9 @@ public class GUI extends javax.swing.JFrame {
     Painting painting = new Painting(title, author,
             purchasePrice, askingPrice,height, width, media);
     
-    
+    FileOutputStream fos = null;
+    ObjectOutputStream out = null;
+
     /**
      * Creates new form GUI
      */
@@ -216,6 +218,11 @@ public class GUI extends javax.swing.JFrame {
         });
 
         jButton6.setText(">");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -493,8 +500,8 @@ public class GUI extends javax.swing.JFrame {
     private void serialization()
     {
         //add to file
-        FileOutputStream fos = null;
-        ObjectOutputStream out = null;
+//        FileOutputStream fos = null;
+//        ObjectOutputStream out = null;
         
         try
         {
@@ -547,6 +554,10 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField11ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+         
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         try
         {    
             //left arrow
@@ -554,53 +565,41 @@ public class GUI extends javax.swing.JFrame {
             //clear text area           
             jTextArea1.setText("");
             
-            //only print if not null
-            if(numStoreItems[pointer]!= null)
-            {    
-                if(pointer < count)
-                {
-                    pointer = count - 1;   
-                }
-                jTextArea1.setText(numStoreItems[pointer].printableString());
-                //System.out.println(numStoreItems[pointer].printableString());
-                pointer--;
-            }
-            else
+      
+            if(pointer < count)
             {
-                pointer = count - 1;
+                pointer = count - 1;   
             }
+            jTextArea1.setText(numStoreItems[pointer].printableString());
+                //System.out.println(numStoreItems[pointer].printableString());
+            pointer--;
+          
             
         }
         catch(Exception e)
         {
             jTextArea1.setText("Error. Nothing in this spot in array. ");
-        }
+        }  
          
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_jButton5ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
         try
-        {
-            // right arrow  
+        {    
+            //right arrow
             
+               
             //clear text area
             jTextArea1.setText("");
             
-            //only print if not null
-            if(numStoreItems[pointer]!= null)
-            {    
-                if(pointer >= count)
-                {
-                    pointer = 0;
-                }    
-                jTextArea1.setText(numStoreItems[pointer].printableString());
-                //System.out.println(numStoreItems[pointer].printableString());
-                pointer++;
-            }
-            else
+            if(pointer >= count)
             {
                 pointer = 0;
-            }
+            }    
+            jTextArea1.setText(numStoreItems[pointer].printableString());
+                //System.out.println(numStoreItems[pointer].printableString());
+            pointer++;
             
         }
         catch(Exception e)
@@ -608,7 +607,7 @@ public class GUI extends javax.swing.JFrame {
             jTextArea1.setText("Error. Nothing in this spot in array. ");
       
         }
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     /**
      * @param args the command line arguments

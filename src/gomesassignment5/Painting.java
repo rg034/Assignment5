@@ -1,6 +1,7 @@
 package gomesassignment5;
 
 
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -17,6 +18,7 @@ Sept 26, 2017
 Oct  03, 2017 - Work on date format. Still getting an error
 Oct  05, 2017 - Removed date with permission from Dr. Woodcock
 Oct  10, 2017 - Changed printableString() to use super
+Nov  13, 2017 - Add necessary Serialization code
 ****************************************************** 
 */
 
@@ -24,7 +26,7 @@ Oct  10, 2017 - Changed printableString() to use super
  *
  * @author rg034
  */
-public class Painting extends StoreItem{
+public class Painting extends StoreItem implements Serializable{
     static int paintCount;
     String title;
     int height;
