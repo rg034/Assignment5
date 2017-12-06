@@ -583,7 +583,7 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+
         try
         {    
             //right arrow
@@ -661,6 +661,9 @@ public class GUI extends javax.swing.JFrame {
         }         
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    /*
+        This button saves the object to a file
+    */
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
             String fileName;
