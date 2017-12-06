@@ -74,12 +74,9 @@ public class GUI extends javax.swing.JFrame {
     int index = 0;
     String fileName = "storeItems.ser";
     
-    //read object from file
-        FileInputStream fis = null;
-        ObjectInputStream in = null;
+    FileInputStream fis = null;
+    ObjectInputStream in = null;
 
-    //going to use this to show polymorphism
-    //StoreItem[] numStoreItems = new StoreItem[5];
     ArrayList<StoreItem> numStoreItems = new ArrayList<StoreItem>();
 
        
@@ -469,8 +466,7 @@ public class GUI extends javax.swing.JFrame {
         {
             genre = jTextField6.getText(); 
             book = new Book(title, author, purchasePrice, askingPrice, genre);
-//            Book book = new Book(title, author,
-//                purchasePrice, askingPrice, genre);
+            
             jTextArea1.setText(book.printableString());
             
             //This is polymorphism!! You can add a book to the StoreItem array
@@ -521,7 +517,6 @@ public class GUI extends javax.swing.JFrame {
         //increase count
         count++;
         
-        //serialization();
         }   
         catch(Exception e)
         {
@@ -622,37 +617,35 @@ public class GUI extends javax.swing.JFrame {
         fin.showOpenDialog(null); 
         File f = fin.getSelectedFile();
         
-        try{
-            // Try to get the path
+        try
+        {
             String filename = f.getAbsolutePath();
+              
+            try(FileReader reader = new FileReader(filename); 
+                BufferedReader br = new BufferedReader(reader))
+            {
+                FileInputStream fileIn = new FileInputStream(filename);
+                ObjectInputStream in = new ObjectInputStream(fileIn);
 
-                // create a file reader
-                try(FileReader reader = new FileReader(filename); 
-                    BufferedReader br = new BufferedReader(reader))
-                {
-                    // create input stream
-                    FileInputStream fileIn = new FileInputStream(filename);
-                    ObjectInputStream in = new ObjectInputStream(fileIn);
-                    // read the objects into the arraylist of storeitems
-                    numStoreItems = (ArrayList) in.readObject();
-                    // close streams
-                    in.close();
-                    fileIn.close();
-   
-                }
-                catch(ClassNotFoundException c)
-                {
-                    JOptionPane.showMessageDialog(rootPane,"Error loading file. ");
-                    c.printStackTrace();
-                    return;
-                }
-                catch (Exception ex)
-                {    
-                    JOptionPane.showMessageDialog(rootPane,"Error loading file. ");
-                    ex.printStackTrace();
-                    return;
-                }
+                numStoreItems = (ArrayList) in.readObject();
+
+                in.close();
+                fileIn.close();
+
             }
+            catch(ClassNotFoundException c)
+            {
+                JOptionPane.showMessageDialog(rootPane,"Error loading file. ");
+                c.printStackTrace();
+                return;
+            }
+            catch (Exception ex)
+            {    
+                JOptionPane.showMessageDialog(rootPane,"Error loading file. ");
+                ex.printStackTrace();
+                return;
+            }
+        }
         
         catch(Exception ex)
         {
@@ -666,44 +659,43 @@ public class GUI extends javax.swing.JFrame {
     */
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
-            String fileName;
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Serializable", "ser");
-            JFileChooser fc = new JFileChooser();
-            fc.setFileFilter(filter);
-            fc.setSelectedFile(new File("Inventory.ser"));
-            File workingDirectory = new File(System.getProperty("user.dir"));
-            fc.setCurrentDirectory(workingDirectory);
-            int response = fc.showSaveDialog(fc);
-            File f = fc.getSelectedFile();
-            
-            try
+        String fileName;
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Serializable", "ser");
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(filter);
+        fc.setSelectedFile(new File("Inventory.ser"));
+        File workingDirectory = new File(System.getProperty("user.dir"));
+        fc.setCurrentDirectory(workingDirectory);
+        int response = fc.showSaveDialog(fc);
+        File f = fc.getSelectedFile();
+
+        try
+        {
+            fileName = fc.getSelectedFile().toString();
+
+            try(BufferedWriter output = Files.newBufferedWriter(Paths.get(fileName)))
             {
-                fileName = fc.getSelectedFile().toString();
+                FileOutputStream fileOut = new FileOutputStream(fileName);
+                ObjectOutputStream out = new ObjectOutputStream(fileOut);
 
-                try(BufferedWriter output = Files.newBufferedWriter(Paths.get(fileName)))
-                {
-                    FileOutputStream fileOut = new FileOutputStream(fileName);
-                    ObjectOutputStream out = new ObjectOutputStream(fileOut);
-                 
-                    out.writeObject(numStoreItems);
+                out.writeObject(numStoreItems);
 
-                    // close file
-                    out.close();
-                    fileOut.close();
+                // close file
+                out.close();
+                fileOut.close();
 
-                    
-                    JOptionPane.showMessageDialog(rootPane, "Save Successful. "); 
-                } 
-                catch (Exception ex) 
-                {
-                    JOptionPane.showMessageDialog(rootPane,"Error saving file. ");
-                }
-            }
-            catch(Exception ex)
+
+                JOptionPane.showMessageDialog(rootPane, "Save Successful. "); 
+            } 
+            catch (Exception ex) 
             {
                 JOptionPane.showMessageDialog(rootPane,"Error saving file. ");
             }
-         
+        }
+        catch(Exception ex)
+        {
+            JOptionPane.showMessageDialog(rootPane,"Error saving file. ");
+        }
   
     }//GEN-LAST:event_jButton3ActionPerformed
 
