@@ -21,10 +21,11 @@ Oct  05, 2017 - Removed date with permission from Dr. Woodcock
 Oct  10, 2017 - Correct improperly done polymorphism after discussion with 
                 Dr Woodcock
 Nov  13, 2017 - Add serialization
+Dec  05, 2017 - Fix Serialization w/ Load and Save buttons
 ****************************************************** 
-I encountered a lot of issues with the DATE in this program. It kept causing
-errors, making it difficult to test the rest of the program. I was given
-permission to remove it. 
+I encountered a lot of issues with serialization, and I received some tips from
+Ali. I am still unable to parse through the ArrayList using the arrows, but I 
+hope to get that working. It does successfully load from and save to a file.
 *******************************************************
 */
 
@@ -562,18 +563,15 @@ public class GUI extends javax.swing.JFrame {
             //clear text area           
             jTextArea1.setText("");
             
-      
-          //  if(pointer < count)
-          //  {
-          //      pointer = count - 1;   
-          //  }
-                      //  jTextArea1.setText(Arrays.toString(numStoreItems.toArray()));
-            for(int i=0; i < numStoreItems.size(); i++)
-            {jTextArea1.append(numStoreItems.get(i).printableString() + "\n");
-             jTextArea1.append("\n\n");}
+//            if(pointer < count)
+//            {
+//               pointer = count - 1;   
+//            }
+            for(int i = 0; i < numStoreItems.size(); i++)           
+            {jTextArea1.append(numStoreItems.get(count).printableString() + "\n");
+            jTextArea1.append("\n\n");}
 
-                //System.out.println(numStoreItems[pointer].printableString());
-           // pointer--;
+//           pointer--;
           
             
         }
@@ -594,15 +592,14 @@ public class GUI extends javax.swing.JFrame {
             //clear text area
             jTextArea1.setText("");
             for(int i=0; i < numStoreItems.size(); i++)
-            {jTextArea1.append(numStoreItems.get(i).printableString() + "\n");
-            jTextArea1.append("\n\n");}
-         //   if(pointer >= count)
+            
+           // if(pointer >= count)
          //   {
           //      pointer = 0;
           //  }    
-           // jTextArea1.setText(Arrays.toString(numStoreItems.toArray()));
-                //System.out.println(numStoreItems[pointer].printableString());
-           // pointer++;
+            { jTextArea1.append(numStoreItems.get(count).printableString() + "\n");
+            jTextArea1.append("\n\n");}
+//            pointer++;
             
         }
         catch(Exception e)
@@ -612,6 +609,9 @@ public class GUI extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jButton6ActionPerformed
 
+    /*
+    This button loads the file that contains the serialized data
+    */
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         FileNameExtensionFilter filter = new FileNameExtensionFilter(".ser", "ser");
@@ -642,13 +642,13 @@ public class GUI extends javax.swing.JFrame {
                 }
                 catch(ClassNotFoundException c)
                 {
-                    JOptionPane.showMessageDialog(rootPane,"File Error, Please Try Again.");
+                    JOptionPane.showMessageDialog(rootPane,"Error loading file. ");
                     c.printStackTrace();
                     return;
                 }
                 catch (Exception ex)
                 {    
-                    JOptionPane.showMessageDialog(rootPane,"File Error, Please Try Again.");
+                    JOptionPane.showMessageDialog(rootPane,"Error loading file. ");
                     ex.printStackTrace();
                     return;
                 }
@@ -656,59 +656,49 @@ public class GUI extends javax.swing.JFrame {
         
         catch(Exception ex)
         {
-            JOptionPane.showMessageDialog(rootPane,"No file selected");
+            JOptionPane.showMessageDialog(rootPane,"Please select a file. ");
             return;
         }         
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-       
-            // create a string
+
             String fileName;
-            // create a filter for the file chooser
             FileNameExtensionFilter filter = new FileNameExtensionFilter("Serializable", "ser");
-            // create file chooser
             JFileChooser fc = new JFileChooser();
-            // add filter to file chooser
             fc.setFileFilter(filter);
-            // create a new file
             fc.setSelectedFile(new File("Inventory.ser"));
-            // set the directory
             File workingDirectory = new File(System.getProperty("user.dir"));
             fc.setCurrentDirectory(workingDirectory);
-            // int will hold the user response
             int response = fc.showSaveDialog(fc);
             File f = fc.getSelectedFile();
             
             try
             {
-                    
-       
                 fileName = fc.getSelectedFile().toString();
 
-                try(BufferedWriter output = Files.newBufferedWriter(Paths.get(fileName))){
-                    // Create output stream
+                try(BufferedWriter output = Files.newBufferedWriter(Paths.get(fileName)))
+                {
                     FileOutputStream fileOut = new FileOutputStream(fileName);
                     ObjectOutputStream out = new ObjectOutputStream(fileOut);
-                    // write object to file
+                 
                     out.writeObject(numStoreItems);
 
                     // close file
                     out.close();
                     fileOut.close();
 
-                    // Tell the user the file is saved
-                    JOptionPane.showMessageDialog(rootPane, "Inventory Saved!");
-                // Throw Exception  
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(rootPane,"Error, File Did Not Save, Try Again");
+                    
+                    JOptionPane.showMessageDialog(rootPane, "Save Successful. "); 
+                } 
+                catch (Exception ex) 
+                {
+                    JOptionPane.showMessageDialog(rootPane,"Error saving file. ");
                 }
             }
-                 // Throw Exception 
             catch(Exception ex)
             {
-                    JOptionPane.showMessageDialog(rootPane,"Error, File Did Not Save.");
+                JOptionPane.showMessageDialog(rootPane,"Error saving file. ");
             }
          
   
