@@ -29,11 +29,22 @@ permission to remove it.
 */
 
  
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 
@@ -61,9 +72,15 @@ public class GUI extends javax.swing.JFrame {
     int pointer = 0;
     int index = 0;
     String fileName = "storeItems.ser";
+    
+    //read object from file
+        FileInputStream fis = null;
+        ObjectInputStream in = null;
 
     //going to use this to show polymorphism
-    StoreItem[] numStoreItems = new StoreItem[5];
+    //StoreItem[] numStoreItems = new StoreItem[5];
+    ArrayList<StoreItem> numStoreItems = new ArrayList<StoreItem>();
+
        
     Book book = new Book(title, author,
             purchasePrice, askingPrice, genre);
@@ -122,6 +139,8 @@ public class GUI extends javax.swing.JFrame {
         jTextField11 = new javax.swing.JTextField();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -210,17 +229,31 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setText("<");
+        jButton5.setText("View");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
             }
         });
 
-        jButton6.setText(">");
+        jButton6.setText("View");
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("load");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("save");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
             }
         });
 
@@ -229,7 +262,7 @@ public class GUI extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 133, Short.MAX_VALUE)
+                .addGap(0, 221, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel12)
                     .addComponent(jLabel11))
@@ -296,14 +329,25 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(jButton6))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(71, Short.MAX_VALUE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 504, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(38, 38, 38)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton2)
+                            .addComponent(jButton3))))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(31, 31, 31)
+                        .addComponent(jButton2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton3)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton5)
@@ -429,7 +473,7 @@ public class GUI extends javax.swing.JFrame {
             jTextArea1.setText(book.printableString());
             
             //This is polymorphism!! You can add a book to the StoreItem array
-            numStoreItems[count] = (book);
+            numStoreItems.add(book);
          
         }
         //movie
@@ -444,7 +488,7 @@ public class GUI extends javax.swing.JFrame {
             jTextArea1.setText(movie.printableString());
             
             //This is polymorphism!! You can add a movie to the StoreItem array
-            numStoreItems[count] = (movie); 
+            numStoreItems.add(movie); 
                      
         }
         //painting
@@ -458,7 +502,7 @@ public class GUI extends javax.swing.JFrame {
             jTextArea1.setText(painting.printableString());
             
             //This is polymorphism!! You can add a movie to the StoreItem array
-            numStoreItems[count] = (painting);
+            numStoreItems.add(painting);
         }
         
         jTextField1.setText("");
@@ -476,61 +520,14 @@ public class GUI extends javax.swing.JFrame {
         //increase count
         count++;
         
-        serialization();
-        
-    }
-    catch(NumberFormatException e)
-    {
-        jTextArea1.setText("An error occured. Please check your input fields.");   
-    }
-}
-    
-    /*
-    Name: serialization() 
-    ***********************************************************
-    Author: Raelene Gomes
-    ***********************************************************
-    This method adds an object to a file and reads the object back from 
-    the file.
-    ***********************************************************
-    Nov 13, 2017
-    ***********************************************************
-    */
-    
-    private void serialization()
-    {
-        //add to file
-//        FileOutputStream fos = null;
-//        ObjectOutputStream out = null;
-        
-        try
-        {
-            fos = new FileOutputStream(fileName);
-            out = new ObjectOutputStream(fos);
-            out.writeObject(numStoreItems[count]);
-
-            out.close();
-        } 
-        catch (Exception e) 
-        {
-            e.printStackTrace();
-        }
-        
-        //read object from file
-        FileInputStream fis = null;
-        ObjectInputStream in = null;
-        
-        try
-        {
-            fis = new FileInputStream(fileName);
-            in = new ObjectInputStream(fis);
-            numStoreItems[count] = (StoreItem) in.readObject();
-            in.close();
-        }
+        //serialization();
+        }   
         catch(Exception e)
         {
-            e.printStackTrace();
-        }   
+            jTextArea1.setText("Error. Please Check inputs.");
+        }
+    
+    
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
@@ -566,13 +563,17 @@ public class GUI extends javax.swing.JFrame {
             jTextArea1.setText("");
             
       
-            if(pointer < count)
-            {
-                pointer = count - 1;   
-            }
-            jTextArea1.setText(numStoreItems[pointer].printableString());
+          //  if(pointer < count)
+          //  {
+          //      pointer = count - 1;   
+          //  }
+                      //  jTextArea1.setText(Arrays.toString(numStoreItems.toArray()));
+            for(int i=0; i < numStoreItems.size(); i++)
+            {jTextArea1.append(numStoreItems.get(i).printableString() + "\n");
+             jTextArea1.append("\n\n");}
+
                 //System.out.println(numStoreItems[pointer].printableString());
-            pointer--;
+           // pointer--;
           
             
         }
@@ -592,22 +593,126 @@ public class GUI extends javax.swing.JFrame {
                
             //clear text area
             jTextArea1.setText("");
-            
-            if(pointer >= count)
-            {
-                pointer = 0;
-            }    
-            jTextArea1.setText(numStoreItems[pointer].printableString());
+            for(int i=0; i < numStoreItems.size(); i++)
+            {jTextArea1.append(numStoreItems.get(i).printableString() + "\n");
+            jTextArea1.append("\n\n");}
+         //   if(pointer >= count)
+         //   {
+          //      pointer = 0;
+          //  }    
+           // jTextArea1.setText(Arrays.toString(numStoreItems.toArray()));
                 //System.out.println(numStoreItems[pointer].printableString());
-            pointer++;
+           // pointer++;
             
         }
         catch(Exception e)
         {
             jTextArea1.setText("Error. Nothing in this spot in array. ");
-      
         }
+
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(".ser", "ser");
+        JFileChooser fin = new JFileChooser();
+        fin.setFileFilter(filter); 
+        File workingDirectory = new File(System.getProperty("user.dir"));
+        fin.setCurrentDirectory(workingDirectory);
+        fin.showOpenDialog(null); 
+        File f = fin.getSelectedFile();
+        
+        try{
+            // Try to get the path
+            String filename = f.getAbsolutePath();
+
+                // create a file reader
+                try(FileReader reader = new FileReader(filename); 
+                    BufferedReader br = new BufferedReader(reader))
+                {
+                    // create input stream
+                    FileInputStream fileIn = new FileInputStream(filename);
+                    ObjectInputStream in = new ObjectInputStream(fileIn);
+                    // read the objects into the arraylist of storeitems
+                    numStoreItems = (ArrayList) in.readObject();
+                    // close streams
+                    in.close();
+                    fileIn.close();
+   
+                }
+                catch(ClassNotFoundException c)
+                {
+                    JOptionPane.showMessageDialog(rootPane,"File Error, Please Try Again.");
+                    c.printStackTrace();
+                    return;
+                }
+                catch (Exception ex)
+                {    
+                    JOptionPane.showMessageDialog(rootPane,"File Error, Please Try Again.");
+                    ex.printStackTrace();
+                    return;
+                }
+            }
+        
+        catch(Exception ex)
+        {
+            JOptionPane.showMessageDialog(rootPane,"No file selected");
+            return;
+        }         
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+       
+            // create a string
+            String fileName;
+            // create a filter for the file chooser
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Serializable", "ser");
+            // create file chooser
+            JFileChooser fc = new JFileChooser();
+            // add filter to file chooser
+            fc.setFileFilter(filter);
+            // create a new file
+            fc.setSelectedFile(new File("Inventory.ser"));
+            // set the directory
+            File workingDirectory = new File(System.getProperty("user.dir"));
+            fc.setCurrentDirectory(workingDirectory);
+            // int will hold the user response
+            int response = fc.showSaveDialog(fc);
+            File f = fc.getSelectedFile();
+            
+            try
+            {
+                    
+       
+                fileName = fc.getSelectedFile().toString();
+
+                try(BufferedWriter output = Files.newBufferedWriter(Paths.get(fileName))){
+                    // Create output stream
+                    FileOutputStream fileOut = new FileOutputStream(fileName);
+                    ObjectOutputStream out = new ObjectOutputStream(fileOut);
+                    // write object to file
+                    out.writeObject(numStoreItems);
+
+                    // close file
+                    out.close();
+                    fileOut.close();
+
+                    // Tell the user the file is saved
+                    JOptionPane.showMessageDialog(rootPane, "Inventory Saved!");
+                // Throw Exception  
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(rootPane,"Error, File Did Not Save, Try Again");
+                }
+            }
+                 // Throw Exception 
+            catch(Exception ex)
+            {
+                    JOptionPane.showMessageDialog(rootPane,"Error, File Did Not Save.");
+            }
+         
+  
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -646,6 +751,8 @@ public class GUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JComboBox<String> jComboBox1;

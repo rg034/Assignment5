@@ -28,7 +28,7 @@ import java.io.Serializable;
  */
 
 //added the part where it implements Serializable
-public class StoreItem{
+public class StoreItem implements Serializable{
     static int itemCount;
     String title;
     String author;
